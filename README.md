@@ -36,6 +36,8 @@ An interactive web application that classifies the genre of user-uploaded audio 
 │   ├── data_exploration.ipynb
 │   ├── spectrogram_generation.ipynb
 │   └── model_training.ipynb
+├── scripts/                # Utility scripts
+│   └── generate_spectrograms.py  # Script to generate Mel spectrograms
 ├── data/                   # Data directory
 │   ├── raw/                # Raw audio files
 │   └── processed/          # Processed spectrograms
@@ -78,6 +80,17 @@ An interactive web application that classifies the genre of user-uploaded audio 
    npm run dev
    ```
 
+## Spectrogram Generation
+
+The model uses Mel spectrograms generated from audio files for training and prediction. To generate spectrograms:
+
+```bash
+cd scripts
+python generate_spectrograms.py
+```
+
+This script processes audio files from the GTZAN dataset and saves Mel spectrograms as NumPy arrays for model training.
+
 ## Usage
 
 1. Upload an audio file (WAV or MP3 format)
@@ -91,3 +104,7 @@ An interactive web application that classifies the genre of user-uploaded audio 
 The CNN model is trained on the GTZAN dataset, which contains 1000 audio tracks each 30 seconds long, with 10 genres (100 tracks per genre).
 
 For details on model training, refer to the Jupyter notebooks in the `notebooks/` directory.
+
+## GitHub Repository
+
+Project source code is available at: [https://github.com/Ru0n/music-genre-classifier-fyp](https://github.com/Ru0n/music-genre-classifier-fyp)
