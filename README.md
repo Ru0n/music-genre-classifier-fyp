@@ -38,10 +38,14 @@ An interactive web application that classifies the genre of user-uploaded audio 
 │   └── model_training.ipynb
 ├── scripts/                # Utility scripts
 │   └── generate_spectrograms.py  # Script to generate Mel spectrograms
+├── tests/                  # Test files
+│   ├── test_backend.py     # Backend API tests
+│   └── test_model.py       # Model functionality tests
 ├── data/                   # Data directory
 │   ├── raw/                # Raw audio files
 │   └── processed/          # Processed spectrograms
 ├── model/                  # Saved models
+├── run.py                  # Consolidated server run script
 ├── requirements.txt        # Python dependencies
 └── README.md               # Project documentation
 ```
@@ -63,8 +67,20 @@ An interactive web application that classifies the genre of user-uploaded audio 
 
 3. Run the Flask application:
    ```
-   cd backend
-   python app.py
+   # Make sure the virtual environment is activated
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   
+   # Run the server with default settings (localhost:5001)
+   python run.py
+   ```
+   
+   Optional arguments:
+   ```
+   # Run with network access on port 5001
+   python run.py --host 0.0.0.0 --port 5001
+   
+   # Run on a different port
+   python run.py --port 5002
    ```
 
 ### Frontend
@@ -98,6 +114,40 @@ This script processes audio files from the GTZAN dataset and saves Mel spectrogr
 3. View the predicted genre and confidence scores
 4. Play the audio using the integrated player
 5. Explore automatically generated playlists
+
+## Running Tests
+
+To run the tests, make sure the virtual environment is activated:
+
+```bash
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### Testing the Model
+
+```bash
+python tests/test_model.py
+```
+
+You can also specify custom paths for the model and scaler:
+
+```bash
+python tests/test_model.py path/to/model.keras path/to/scaler.joblib
+```
+
+### Testing the Backend API
+
+First, make sure the backend server is running:
+
+```bash
+python run.py
+```
+
+Then, in a separate terminal:
+
+```bash
+python tests/test_backend.py
+```
 
 ## Model Training
 
