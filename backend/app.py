@@ -4,29 +4,31 @@ import os
 from werkzeug.utils import secure_filename
 import logging
 
-# Import utility modules
-from utils.audio_processor import process_audio
-from utils.spectrogram_generator import generate_spectrogram
-from models.model_loader import load_model, predict_genre
-from api.playlist import add_to_playlist, get_playlists
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Import configuration
-from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MODEL_PATH
+from backend.config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MODEL_PATH
+
+# Import utility modules
+from backend.utils.audio_processor import process_audio
+from backend.utils.spectrogram_generator import generate_spectrogram
+from backend.models.model_loader import load_model, predict_genre
+from backend.api.playlist import add_to_playlist, get_playlists
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+# Enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
 
 # Configure app
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
 
-# Create upload folder if it doesn't exist
+# Create upload folder and spectrograms folder if they don't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(os.path.join(UPLOAD_FOLDER, 'spectrograms'), exist_ok=True)
 
 # Load the model
 model = None
@@ -45,36 +47,47 @@ def upload_file():
     """
     API endpoint for uploading audio files
     """
+    logger.info(f"Received upload request: {request.files}")
+
     # Check if the post request has the file part
     if 'file' not in request.files:
+        logger.error("No file part in the request")
         return jsonify({'error': 'No file part'}), 400
-    
+
     file = request.files['file']
-    
+    logger.info(f"File received: {file.filename}")
+
     # If user does not select file, browser also
     # submit an empty part without filename
     if file.filename == '':
+        logger.error("Empty filename")
         return jsonify({'error': 'No selected file'}), 400
-    
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        logger.info(f"Saving file to: {filepath}")
         file.save(filepath)
-        
+
         try:
             # Process audio file
+            logger.info(f"Processing audio file: {filepath}")
             processed_audio = process_audio(filepath)
-            
+
             # Generate spectrogram
+            logger.info(f"Generating spectrogram for: {filename}")
             spectrogram_path = generate_spectrogram(processed_audio, filename)
-            
+
             # Predict genre
             if model is not None:
-                genre, confidence = predict_genre(model, spectrogram_path)
-                
+                logger.info(f"Predicting genre for: {filename}")
+                genre, confidence = predict_genre(model, audio_data=processed_audio)
+
                 # Add to playlist
+                logger.info(f"Adding to playlist: {genre}")
                 playlist_id = add_to_playlist(filepath, genre)
-                
+
+                logger.info(f"Successfully processed file: {filename}, genre: {genre}")
                 return jsonify({
                     'filename': filename,
                     'genre': genre,
@@ -83,12 +96,16 @@ def upload_file():
                     'playlist_id': playlist_id
                 }), 200
             else:
+                logger.error("Model not loaded")
                 return jsonify({'error': 'Model not loaded'}), 500
-                
+
         except Exception as e:
             logger.error(f"Error processing file: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             return jsonify({'error': str(e)}), 500
-    
+
+    logger.error(f"File type not allowed: {file.filename}")
     return jsonify({'error': 'File type not allowed'}), 400
 
 @app.route('/api/audio/<filename>', methods=['GET'])
@@ -114,5 +131,12 @@ def get_all_playlists():
     playlists = get_playlists()
     return jsonify(playlists), 200
 
+@app.route('/test', methods=['GET'])
+def test():
+    """
+    Test endpoint
+    """
+    return jsonify({'message': 'Backend is working!'}), 200
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5002)
