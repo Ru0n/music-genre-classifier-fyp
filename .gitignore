@@ -109,3 +109,10 @@ backend/uploads/
 
 # Node modules
 frontend/node_modules/
+
+# Data directory
+data/
+
+# Downloaded files
+*.tar.gz
+
