@@ -1,0 +1,63 @@
+{
+  "blues": [
+    "country.00000.wav",
+    "pop.00000.wav",
+    "pop.00010.wav",
+    "blues.00000.wav",
+    "rock.00000.wav",
+    "reggae.00000.wav",
+    "classical.00000.wav",
+    "disco.00000.wav",
+    "reggae.00007.wav",
+    "pop.00002.wav",
+    "reggae.00001.wav",
+    "blues.00002.wav"
+  ],
+  "metal": [
+    "rock.00000.wav",
+    "blues.00000.wav",
+    "classical.00000.wav",
+    "classical.00001.wav",
+    "country.00000.wav",
+    "pop.00000.wav",
+    "pop.00005.wav",
+    "metal.00007.wav",
+    "metal.00016.wav",
+    "metal.00006.wav"
+  ],
+  "pop": [
+    "pop.00001.wav",
+    "rock.00000.wav",
+    "blues.00000.wav",
+    "pop.00000.wav",
+    "pop.00002.wav"
+  ],
+  "reggae": [
+    "country.00000.wav",
+    "reggae.00002.wav"
+  ],
+  "country": [
+    "country.00001.wav",
+    "country.00000.wav",
+    "pop.00008.wav",
+    "country.00006.wav",
+    "country.00012.wav"
+  ],
+  "rock": [
+    "rock.00000.wav"
+  ],
+  "disco": [
+    "disco.00001.wav"
+  ],
+  "jazz": [
+    "country.00001.wav",
+    "jazz.00017.wav"
+  ],
+  "classical": [
+    "classical.00001.wav",
+    "classical.00017.wav"
+  ],
+  "hiphop": [
+    "hiphop.00001.wav"
+  ]
+}
