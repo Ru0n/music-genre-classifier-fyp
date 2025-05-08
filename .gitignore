@@ -99,11 +99,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Large model files
-model/*.keras
-model/*.h5
-model/*.joblib
-
 # Uploaded files
 backend/uploads/
 
